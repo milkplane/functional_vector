@@ -60,6 +60,13 @@ namespace nostd {
 		void reserve(const size_type new_bigger_capacity);
 		void shrink_to_fit();
 
+		// Modifiers
+		void push_back(const reference item);
+		void push_back(type&& item);
+		void pop_back();
+		void clear();
+		void swap(functional_vector& other);
+
 		// Non-memebers
 		template <typename type>
 		friend std::ostream& operator<<(std::ostream& stream, const functional_vector<type>& v);
@@ -215,6 +222,47 @@ namespace nostd {
 	template<typename type>
 	void functional_vector<type>::shrink_to_fit() {
 		return resize(size);
+	}
+
+	template <typename type>
+	void functional_vector<type>::push_back(const functional_vector<type>::reference item) {
+		if (size == capacity) {
+			reserve(capacity * 2 + 1);
+		}
+
+		arr[size] = item;
+		size++;
+	}
+
+	template <typename type>
+	void functional_vector<type>::push_back(type&& item) {
+		if (size == capacity) {
+			reserve(capacity * 2 + 1);
+		}
+
+		arr[size] = item;
+		size++;
+	}
+
+	template <typename type>
+	void functional_vector<type>::pop_back() {
+		size--;
+	}
+
+	template <typename type>
+	void functional_vector<type>::clear() {
+		delete[] arr;
+
+		arr = nullptr;
+		size = 0;
+		capacity = 0;
+	}
+
+	template <typename type>
+	void functional_vector<type>::swap(functional_vector<type>& other) {
+		std::swap(other.arr, arr);
+		std::swap(other.size, size);
+		std::swap(other.capacity, capacity);
 	}
 
 	template<typename type>
