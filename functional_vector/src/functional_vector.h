@@ -12,6 +12,7 @@ namespace nostd {
 	template <typename type>
 	class functional_vector {
 	public:
+		// Typedefs
 		using value_type = type;
 		using reference = type&;
 		using const_reference = const type&;
@@ -23,6 +24,7 @@ namespace nostd {
 
 		enum { empty_vector_capacity = 15 };
 
+		// Constractors
 		functional_vector();
 		functional_vector(const type* arr, const size_type size, const size_type capacity);
 		functional_vector(const type* arr, const size_type size) : functional_vector(arr, size, size) {};
@@ -30,8 +32,11 @@ namespace nostd {
 		functional_vector(functional_vector&& other);
 		functional_vector(size_type times, type filler);
 		functional_vector(const std::initializer_list<type>& li);
+
+		// Destractors
 		virtual ~functional_vector() { delete[] arr; };
 
+		// Operators
 		functional_vector& operator=(const functional_vector& other);
 		functional_vector& operator=(functional_vector&& other);
 		reference operator[](size_type i) { return arr[i]; };
@@ -39,11 +44,13 @@ namespace nostd {
 		reference at(const size_type i);
 		const_reference at(const size_type i) const;
 
+		// Iterators
 		iterator begin() const { return arr; } ;
 		iterator end() const { return arr + size; };
 		const_iterator cbegin() const { return arr; };
 		const_iterator cend() const { return arr + size; };
 
+		// Capacity
 		size_type max_size() const { return std::numeric_limits<size_type>::max(); };
 		size_type get_size() const { return size; };
 		size_type get_capacity() const { return capacity; };
@@ -53,6 +60,7 @@ namespace nostd {
 		void reserve(const size_type new_bigger_capacity);
 		void shrink_to_fit();
 
+		// Non-memebers
 		template <typename type>
 		friend std::ostream& operator<<(std::ostream& stream, const functional_vector<type>& v);
 	private:
