@@ -34,6 +34,10 @@ namespace nostd {
 
 		functional_vector& operator=(const functional_vector& other);
 		functional_vector& operator=(functional_vector&& other);
+		reference operator[](size_type i) { return arr[i]; };
+		const_reference operator[](size_type i) const { return arr[i]; };
+		reference at(const size_type i);
+		const type& at(const size_type i) const;
 
 		iterator begin() const { return arr; } ;
 		iterator end() const { return arr + size; };
@@ -128,6 +132,21 @@ namespace nostd {
 		size = 0;
 		capacity = 0;
 	}
+
+	template<typename type>
+	type& functional_vector<type>::at(const size_type i) {
+		if (i < 0 || i >= size) throw std::out_of_range("index is out of range");
+
+		return arr[i];
+	}
+
+	template<typename type>
+	const type& functional_vector<type>::at(const size_type i) const {
+		if (i < 0 || i >= size) throw std::out_of_range("index is out of range");
+
+		return arr[i];
+	}
+	
 
 	template<typename type>
 	void functional_vector<type>::resize(const size_type new_size) {
