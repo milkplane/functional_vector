@@ -28,6 +28,11 @@ namespace nostd {
 
 		functional_vector& operator=(const functional_vector& other);
 		functional_vector& operator=(functional_vector&& other);
+
+		iterator begin() { return arr; };
+		iterator end() { return arr + size; }
+		const_iterator cbegin() { return arr; }
+		const_iterator cend() { return arr; }
 	private:
 		type* arr;
 		size_t size;
