@@ -3,6 +3,8 @@
 
 #include <cstring>
 #include <initializer_list>
+#include <iterator>
+#include <algorithm>
 
 namespace nostd {
 	template <typename type>
@@ -24,6 +26,8 @@ namespace nostd {
 		functional_vector(const type* arr, const size_type size) : functional_vector(arr, size, size) {};
 		functional_vector(const functional_vector& other) : functional_vector(other.arr, other.size, other.capacity) {};
 		functional_vector(functional_vector&& other);
+		functional_vector(size_type times, type filler);
+		functional_vector(const std::initializer_list<type>& li);
 		virtual ~functional_vector() { delete[] arr; };
 
 		functional_vector& operator=(const functional_vector& other);
@@ -65,6 +69,26 @@ namespace nostd {
 		other.arr = nullptr;
 		other.size = 0;
 		other.capacity = 0;
+	}
+
+	template<typename type>
+	functional_vector<type>::functional_vector(size_type times, type filler) {
+		size = times;
+		capacity = times;
+		arr = new type[times];
+
+		for (size_type i = 0; i < size; i++) {
+			arr[i] = filler;
+		}
+	}
+
+	template<typename type>
+	functional_vector<type>::functional_vector(const std::initializer_list<type>& li) {
+		size = li.size();
+		capacity = li.size();
+		arr = new type[capacity];
+
+		std::copy(li.begin(), li.end(), arr);
 	}
 
 	template<typename type>
