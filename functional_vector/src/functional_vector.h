@@ -37,7 +37,7 @@ namespace nostd {
 		iterator begin() const { return arr; } ;
 		iterator end() const { return arr + size; };
 		const_iterator cbegin() const { return arr; };
-		const_iterator cend() const { return arr; };
+		const_iterator cend() const { return arr + size; };
 
 		size_type max_size() const { return std::numeric_limits<size_type>::max(); };
 		size_type get_capacity() const { return capacity; };
@@ -186,7 +186,6 @@ namespace nostd {
 	void functional_vector<type>::shrink_to_fit() {
 		return resize(size);
 	}
-
 	
 }
 
