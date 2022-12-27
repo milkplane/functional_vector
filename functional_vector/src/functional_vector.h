@@ -6,6 +6,7 @@
 #include <iterator>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 namespace nostd {
 	template <typename type>
@@ -47,7 +48,8 @@ namespace nostd {
 		void reserve(const size_type new_bigger_capacity);
 		void shrink_to_fit();
 
-		
+		template <typename type>
+		friend std::ostream& operator<<(std::ostream& stream, const functional_vector<type>& v);
 	private:
 		type* arr;
 		size_type size;
@@ -185,6 +187,20 @@ namespace nostd {
 	template<typename type>
 	void functional_vector<type>::shrink_to_fit() {
 		return resize(size);
+	}
+
+	template<typename type>
+	std::ostream& operator<<(std::ostream& stream, const functional_vector<type>& v) {
+		if (v.size == 0) return stream;
+
+		stream << v.arr[0];
+
+		typedef functional_vector<type>::size_type size_type;
+		for (size_type i = 1; i < v.size; i++) {
+			stream << ' ' << v.arr[i];
+		}
+
+		return stream;
 	}
 	
 }
