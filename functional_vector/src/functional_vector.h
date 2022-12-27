@@ -20,8 +20,8 @@ namespace nostd {
 		enum { empty_vector_capacity = 15 };
 
 		functional_vector();
-		functional_vector(const type* arr, const size_t size, const size_t capacity);
-		functional_vector(const type* arr, const size_t size) : functional_vector(arr, size, size) {};
+		functional_vector(const type* arr, const size_type size, const size_type capacity);
+		functional_vector(const type* arr, const size_type size) : functional_vector(arr, size, size) {};
 		functional_vector(const functional_vector& other) : functional_vector(other.arr, other.size, other.capacity) {};
 		functional_vector(functional_vector&& other);
 		virtual ~functional_vector() { delete[] arr; };
@@ -35,8 +35,8 @@ namespace nostd {
 		const_iterator cend() { return arr; }
 	private:
 		type* arr;
-		size_t size;
-		size_t capacity;
+		size_type size;
+		size_type capacity;
 	};
 
 
@@ -48,7 +48,7 @@ namespace nostd {
 	}
 
 	template<typename type>
-	functional_vector<type>::functional_vector(const type* arr, const size_t size, const size_t capacity) {
+	functional_vector<type>::functional_vector(const type* arr, const size_type size, const size_type capacity) {
 		this->arr = new type[capacity];
 		this->size = size;
 		this->capacity = capacity;
