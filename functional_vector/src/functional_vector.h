@@ -14,11 +14,11 @@ namespace nostd {
 	public:
 		using value_type = type;
 		using reference = type&;
-		using const_reference = const reference;
+		using const_reference = const type&;
 		using pointer = value_type*;
-		using const_pointer = const pointer;
-		using iterator = value_type*;
-		using const_iterator = const iterator;
+		using const_pointer = const type*;
+		using iterator = type*;
+		using const_iterator = const type*;
 		using size_type = size_t;
 
 		enum { empty_vector_capacity = 15 };
@@ -37,7 +37,7 @@ namespace nostd {
 		reference operator[](size_type i) { return arr[i]; };
 		const_reference operator[](size_type i) const { return arr[i]; };
 		reference at(const size_type i);
-		const type& at(const size_type i) const;
+		const_reference at(const size_type i) const;
 
 		iterator begin() const { return arr; } ;
 		iterator end() const { return arr + size; };
@@ -135,14 +135,14 @@ namespace nostd {
 	}
 
 	template<typename type>
-	type& functional_vector<type>::at(const size_type i) {
+	typename functional_vector<type>::reference functional_vector<type>::at(const size_type i) {
 		if (i < 0 || i >= size) throw std::out_of_range("index is out of range");
 
 		return arr[i];
 	}
 
 	template<typename type>
-	const type& functional_vector<type>::at(const size_type i) const {
+	typename functional_vector<type>::const_reference functional_vector<type>::at(const size_type i) const {
 		if (i < 0 || i >= size) throw std::out_of_range("index is out of range");
 
 		return arr[i];
