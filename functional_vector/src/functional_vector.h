@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <algorithm>
+#include <cmath>
 
 namespace nostd {
 	template <typename type>
@@ -34,9 +35,17 @@ namespace nostd {
 		functional_vector& operator=(functional_vector&& other);
 
 		iterator begin() const { return arr; } ;
-		iterator end() const { return arr + size; }
-		const_iterator cbegin() const { return arr; }
-		const_iterator cend() const { return arr; }
+		iterator end() const { return arr + size; };
+		const_iterator cbegin() const { return arr; };
+		const_iterator cend() const { return arr; };
+
+		size_type max_size() const { return std::numeric_limits<size_type>::max(); };
+		size_type get_capacity() const { return capacity; };
+		bool empty() const { return size == 0; };
+		void resize(const size_type new_size);
+		void resize(const size_type new_size, const type filler);
+		void reserve(const size_type new_bigger_capacity);
+		void shrink_to_fit();
 
 		
 	private:
@@ -117,6 +126,68 @@ namespace nostd {
 		size = 0;
 		capacity = 0;
 	}
+
+	template<typename type>
+	void functional_vector<type>::resize(const size_type new_size) {
+		type* resized_arr = new type[new_size];
+
+		for (size_type i = 0; i < new_size; i++) {
+			resized_arr[i] = arr[i];
+		}
+
+		delete[] arr;
+
+		arr = resized_arr;
+		size = new_size;
+		capacity = new_size;
+	}
+
+	template<typename type>
+	void functional_vector<type>::resize(const size_type new_size, const type filler) {
+		if (new_size <= size) return resize(new_size);
+
+		type* resized_arr = new type[new_size];
+
+		size_type i;
+		while (i < size) {
+			resized_arr[i] = arr[i];
+			i++;
+		}
+
+		while (i < new_size) {
+			resized_arr[i] = filler;
+			i++;
+		}
+
+		delete[] arr;
+
+		arr = resized_arr;
+		size = new_size;
+		capacity = new_size;
+	}
+
+	template<typename type>
+	void functional_vector<type>::reserve(const size_type new_capacity) {
+		if (new_capacity <= capacity) return;
+
+		type* arr_with_new_capacity = new type[new_capacity];
+
+		for (size_type i = 0; i < size; i++) {
+			arr_with_new_capacity[i] = arr[i];
+		}
+
+		delete[] arr;
+
+		arr = arr_with_new_capacity;
+		capacity = new_capacity;
+	}
+
+	template<typename type>
+	void functional_vector<type>::shrink_to_fit() {
+		return resize(size);
+	}
+
+	
 }
 
 #endif
