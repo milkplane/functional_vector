@@ -148,7 +148,7 @@ namespace nostd {
 
 		type* resized_arr = new type[new_size];
 
-		size_type i;
+		size_type i = 0;
 		while (i < size) {
 			resized_arr[i] = arr[i];
 			i++;
