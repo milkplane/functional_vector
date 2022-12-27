@@ -45,6 +45,7 @@ namespace nostd {
 		const_iterator cend() const { return arr + size; };
 
 		size_type max_size() const { return std::numeric_limits<size_type>::max(); };
+		size_type get_size() const { return size; };
 		size_type get_capacity() const { return capacity; };
 		bool empty() const { return size == 0; };
 		void resize(const size_type new_size);
