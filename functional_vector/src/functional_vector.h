@@ -74,6 +74,11 @@ namespace nostd {
 		type* arr;
 		size_type size;
 		size_type capacity;
+
+		void reallocate(size_type new_capcity);
+		void increase_capacity();
+		void increase_size();
+		void copy(const type* arr, const size_type size, const size_type capacity);
 	};
 
 
@@ -86,22 +91,13 @@ namespace nostd {
 
 	template<typename type>
 	functional_vector<type>::functional_vector(const type* arr, const size_type size, const size_type capacity) {
-		this->arr = new type[capacity];
-		this->size = size;
-		this->capacity = capacity;
-
-		memcpy(this->arr, arr, sizeof(type) * capacity);
+		copy(arr, size, capacity);
 	}
 
 	template<typename type>
 	functional_vector<type>::functional_vector(functional_vector&& other) {
-		arr = other.arr;
-		size = other.size;
-		capacity = other.capacity;
-
-		other.arr = nullptr;
-		other.size = 0;
-		other.capacity = 0;
+		clear();
+		swap(other);
 	}
 
 	template<typename type>
@@ -128,25 +124,17 @@ namespace nostd {
 	functional_vector<type>& functional_vector<type>::operator=(const functional_vector& other) {
 		if (this == &other) return *this;
 
-		delete[] arr;
+		copy(other.arr, other.size, other.capacity);
 
-		arr = new type[other.capacity];
-		memcpy(arr, other.arr, sizeof(type) * other.capacity);
-		size = other.size;
-		capacity = other.capacity;
+		return *this;
 	}
 
 	template<typename type>
 	functional_vector<type>& functional_vector<type>::operator=(functional_vector&& other) {
-		delete[] arr;
+		clear();
+		swap(other);
 
-		arr = other.arr;
-		size = other.size;
-		capacity = other.capacity;
-
-		other = nullptr;
-		size = 0;
-		capacity = 0;
+		return *this;
 	}
 
 	template<typename type>
@@ -158,65 +146,33 @@ namespace nostd {
 
 	template<typename type>
 	typename functional_vector<type>::const_reference functional_vector<type>::at(const size_type i) const {
-		if (i < 0 || i >= size) throw std::out_of_range("index is out of range");
-
-		return arr[i];
+		return *this[i];
 	}
-	
 
 	template<typename type>
 	void functional_vector<type>::resize(const size_type new_size) {
-		type* resized_arr = new type[new_size];
-
-		for (size_type i = 0; i < new_size; i++) {
-			resized_arr[i] = arr[i];
-		}
-
-		delete[] arr;
-
-		arr = resized_arr;
+		reallocate(new_size);
 		size = new_size;
-		capacity = new_size;
 	}
 
 	template<typename type>
 	void functional_vector<type>::resize(const size_type new_size, const type filler) {
 		if (new_size <= size) return resize(new_size);
 
-		type* resized_arr = new type[new_size];
-
-		size_type i = 0;
-		while (i < size) {
-			resized_arr[i] = arr[i];
-			i++;
+		reallocate(new_size);
+		
+		for (size_type i = size; i < new_size; i++) {
+			arr[i] = filler;
 		}
 
-		while (i < new_size) {
-			resized_arr[i] = filler;
-			i++;
-		}
-
-		delete[] arr;
-
-		arr = resized_arr;
 		size = new_size;
-		capacity = new_size;
 	}
 
 	template<typename type>
 	void functional_vector<type>::reserve(const size_type new_capacity) {
 		if (new_capacity <= capacity) return;
 
-		type* arr_with_new_capacity = new type[new_capacity];
-
-		for (size_type i = 0; i < size; i++) {
-			arr_with_new_capacity[i] = arr[i];
-		}
-
-		delete[] arr;
-
-		arr = arr_with_new_capacity;
-		capacity = new_capacity;
+		reallocate(new_capacity);
 	}
 
 	template<typename type>
@@ -226,22 +182,14 @@ namespace nostd {
 
 	template <typename type>
 	void functional_vector<type>::push_back(const functional_vector<type>::reference item) {
-		if (size == capacity) {
-			reserve(capacity * 2 + 1);
-		}
-
-		arr[size] = item;
-		size++;
+		increase_size();
+		arr[size - 1] = item;
 	}
 
 	template <typename type>
 	void functional_vector<type>::push_back(type&& item) {
-		if (size == capacity) {
-			reserve(capacity * 2 + 1);
-		}
-
-		arr[size] = item;
-		size++;
+		increase_size();
+		arr[size - 1] = std::move(item);
 	}
 
 	template <typename type>
@@ -277,6 +225,41 @@ namespace nostd {
 		}
 
 		return stream;
+	}
+
+	template <typename type>
+	void functional_vector<type>::reallocate(size_type new_capcity) {
+		type* old_pointer = arr;
+		arr = new type[new_capcity];
+		
+		copy(old_pointer, size, new_capcity);
+
+		delete[] old_pointer;
+	}
+
+	template <typename type>
+	void functional_vector<type>::increase_capacity() {
+		reallocate(capacity * 1.6 + 1);
+	}
+
+	template <typename type>
+	void functional_vector<type>::increase_size() {
+		if (size == capacity) {
+			increase_capacity();
+		}
+
+		size++;
+	}
+
+	template <typename type>
+	void functional_vector<type>::copy(const type* arr, const size_type size, const size_type capacity) {
+		delete[] this->arr;
+
+		this->arr = new type[capacity];
+		this->size = size;
+		this->capacity = capacity;
+
+		memcpy(this->arr, arr, sizeof(type) * size);
 	}
 	
 }
